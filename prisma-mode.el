@@ -79,7 +79,10 @@
                                          (regexp-opt '("true" "false")
                                                      'words)))
 
-(defvar prisma-font-lock-keywords `((,prisma--block-regexp
+(defconst prisma--comment-regexp "//+\\s-.*")
+
+(defvar prisma-font-lock-keywords `((,prisma--comment-regexp . font-lock-comment-face)
+                                    (,prisma--block-regexp
                                      (1 font-lock-keyword-face)
                                      (2 font-lock-type-face))
                                     (,prisma--assignment-regexp
@@ -98,8 +101,12 @@
 (define-derived-mode prisma-mode
   prog-mode
   "Prisma"
-  "Major mode for editing Prisma Schema Language files"
-  (setq font-lock-defaults '((prisma-font-lock-keywords)))
+  "Major mode for editing Prisma Schema Language files."
+  (setq
+   font-lock-defaults '((prisma-font-lock-keywords))
+   comment-start "// "
+   comment-start-skip "//\\s-*"
+   comment-end "")
   (prisma-fmt-save-hook))
 
 (progn
@@ -107,3 +114,4 @@
                '("\\.prisma\\'" . prisma-mode)))
 
 (provide 'prisma-mode)
+;;; prisma-mode.el ends here
